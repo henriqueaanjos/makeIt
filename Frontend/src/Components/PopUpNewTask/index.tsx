@@ -84,33 +84,39 @@ const PopUpNewTask = ({ setIsVisible, tasks, lists, addTask, coords}: PopUpProps
         e.preventDefault();
         if(title != ''){
             if(duration != ''){
-                if(date.length > 10){
-                    
-                    setDate(t2);
+                if(listId != '0'){
+                    if(date.length > 10){
+                        setDate(t2);
+                    }
+                    const task = {
+                        id: String(tasks.length),
+                        title: title.toLowerCase(),
+                        list_id: listId,
+                        date,
+                        duration,
+                        finished: false
+                    }
+                    setTitle('');
+                    setDate(String(new Date()));
+                    setDuration('00:30');
+                    addTask(task);
+                    setIsVisible(false);
+                }else{
+                    setError({
+                        id: 2,
+                        text: 'Choice a List Before!'
+                    });
                 }
-                const task = {
-                    id: String(tasks.length),
-                    title: title.toLowerCase(),
-                    list_id: listId,
-                    date,
-                    duration,
-                    finished: false
-                }
-                setTitle('');
-                setDate(String(new Date()));
-                setDuration('00:30');
-                addTask(task);
-                setIsVisible(false);
             }else{
                 setError({
                     id: 3,
-                    text: 'Preencha a Duração antes!'
+                    text: 'Digit a Duration Before!'
                 });
             }
         }else{
             setError({
                 id: 1,
-                text: 'Preencha o Title antes!'
+                text: 'Digit a Title Before!'
             });
         }
     }
@@ -182,10 +188,10 @@ const PopUpNewTask = ({ setIsVisible, tasks, lists, addTask, coords}: PopUpProps
                         <Option
                             value=""
                         >
-                            Selecione uma Lista
+                            Choice a List
                         </Option>
-                        {lists.length > 0 ?
-                            lists.filter(item => Number(item.id) > 0).map(item =>
+                        {
+                            lists.map(item =>
                                 <Option
                                     color={item.color}
                                     value={item.id}
@@ -193,10 +199,6 @@ const PopUpNewTask = ({ setIsVisible, tasks, lists, addTask, coords}: PopUpProps
                                     {item.title}
                                 </Option>
                             )
-                        : <Option
-                            >
-                                Sem Lista
-                            </Option>
                         }
                     </Select>
                     {error.id === 2 ? <Error>{error.text}</Error>: null}

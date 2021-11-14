@@ -13,7 +13,7 @@ export default createGlobalStyle`
     body html #root {
         height: 100%;
     }
-    h1, h2, h3, h4, h5, h6, p, a, input, button, select, option {
+    h1, h2, h3, h4, h5, h6, p, a, input, button, select, option,li {
         color: #000;
         font-family: 'Staatliches', cursive;
     }

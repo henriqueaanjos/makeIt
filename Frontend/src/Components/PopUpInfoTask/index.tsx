@@ -51,9 +51,10 @@ interface PopUpTask {
     coords: CoordsProps,
     setTask: (tasks: Task) => void,
     lists: List[],
-    deleteTask: (id: string) => void
+    deleteTask: (id: string) => void,
+    publicMode?: boolean
 }
-const PopUpInfoTask = ({task, setIsVisible, coords, setTask, lists, deleteTask} : PopUpTask) => {
+const PopUpInfoTask = ({task, setIsVisible, coords, setTask, lists, deleteTask, publicMode} : PopUpTask) => {
     const [title, setTitle] = useState(task.title);
     const [list, setList] = useState(task.list_id);
     const [date, setDate] = useState(task.date);
@@ -68,10 +69,10 @@ const PopUpInfoTask = ({task, setIsVisible, coords, setTask, lists, deleteTask} 
     function handleSave(){
         const newTask = {
             id: task.id,
-            title,
-            list_id: list,
-            date,
-            duration,
+            title: title === '' ? task.title : title,
+            list_id: list === '' ? task.list_id : list,
+            date: date === '' ? task.date : date,
+            duration: duration === '' ? task.duration : duration,
             finished: task.finished
         };
         setTask(newTask);
@@ -145,10 +146,12 @@ const PopUpInfoTask = ({task, setIsVisible, coords, setTask, lists, deleteTask} 
                     <Info value={duration} type="time" onChange={e => setDuration(e.currentTarget.value)} readOnly={!isEditing} disabled={!isEditing}/>
                 </Field>
             </Fields>
-            <Footer>
-                <FooterButton text={isEditing ? "Save" : "Edit"} width={"20%"} onClick={isEditing ? handleSave : handleEdit} color={isEditing ? theme.colors.finished :theme.colors.tercenary}/>
-                <FooterButton text="Delete" width={"20%"} onClick={() => handleDelete(task.id)} color={theme.colors.secundary}/>
-            </Footer>
+            {!publicMode &&
+                <Footer>
+                    <FooterButton text={isEditing ? "Save" : "Edit"} width={"20%"} onClick={isEditing ? handleSave : handleEdit} color={isEditing ? theme.colors.finished :theme.colors.tercenary}/>
+                    <FooterButton text="Delete" width={"20%"} onClick={() => handleDelete(task.id)} color={theme.colors.secundary}/>
+                </Footer>
+            }
         </Container>
     );
 }

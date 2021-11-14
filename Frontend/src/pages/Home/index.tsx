@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../Hooks/useAuth';
 import { useAnimation, AnimatePresence } from 'framer-motion';
 
@@ -39,6 +39,8 @@ import PopUpNewList from '../../Components/PopUpNewList';
 import PopUpInfoTask from '../../Components/PopUpInfoTask';
 import PopUpInfoList from '../../Components/PopUpInfoList';
 import PopUpSelectDate from '../../Components/PopUpSelectDate';
+import { api } from '../../Services/api';
+import TaskGroupComplete from '../../Components/TaskGroupComplete';
 
 const OptionsData = [
     {
@@ -71,12 +73,17 @@ interface Task{
 interface List{
     id: string,
     title: string,
-    color: string
+    color: string,
+    published: boolean
 }
 interface DateProps{
     id: string,
     day: string,
     dateComplete: string
+}
+interface InfoResponse{
+    lists:  List[],
+    tasks: Task[]
 }
 
 const Home = () => {
@@ -108,7 +115,8 @@ const Home = () => {
     const [lists, setLists] = useState<List[]>([{
         id: '0',
         title: 'None',
-        color: '#ccc'
+        color: '#ccc',
+        published: false 
     }]);
     const [isFilter, setIsFilter] = useState(false); 
 
@@ -150,12 +158,13 @@ const Home = () => {
     }
 
     function filterByDate(dateTask: string){
+        console.log('date Task -->'+dateTask);
         const dtSplit = dateTask.split('-');
         dtSplit.forEach(element => {
             element.replace('-', '');
         });
         const dtTask = new Date();
-        dtTask.setDate(Number(dtSplit[2]));
+        dtTask.setDate(Number(dtSplit[2].split('T')[0]));
         dtTask.setFullYear(Number(dtSplit[0]));
         dtTask.setMonth(Number(dtSplit[1])-1);
         console.log("essa é a data: "+ dateTask);
@@ -163,7 +172,7 @@ const Home = () => {
         switch(date.id){
             case '1':
                 dtCompare = new Date();
-                console.log(dtCompare, dtTask);
+                console.log('--->'+dtCompare,'------->'+ dtTask);
                 if(dtCompare.getFullYear() === dtTask.getFullYear() && dtCompare.getMonth() === dtTask.getMonth() && dtCompare.getDate() === dtTask.getDate()){
                     return true;
                 }else{
@@ -227,12 +236,32 @@ const Home = () => {
     function handleFilter(id: boolean){
         setIsFilter(id);
     }
-    function handleAddTask(task: Task){
-        setTasks([...tasks, task]);
-        console.log(task);
+    async function handleAddTask(task: Task){
+        try{
+            const response = await api.post<Task>('/tasks', {
+                title: task.title,
+                date: task.date,
+                duration: task.duration,
+                list_id: task.list_id
+            })
+            setTasks([...tasks, response.data]);
+        }catch(err){
+            console.log(err);
+        }
     }
-    function handleAddList(list: List){
-        setLists([...lists, list]);
+    async function handleAddList(list: List){
+        const response = await api.post<List>('/lists', {
+            title: list.title,
+            color: list.color
+        });
+        setLists([...lists, response.data]);
+    }
+    async function handlePublish(id: string){
+        try{
+            await api.put('/publish', {id})
+        }catch(err){
+            console.log(err);
+        }
     }
     function transformDate(duration: string){
         let time = duration.split(':');
@@ -253,15 +282,22 @@ const Home = () => {
     function selectList(list: List){
         setListSelected(list);
     }
-    function doneTask(id: string){
+    async function doneTask(id: string){
         const updatedTasks = tasks.map(task => ({ ...task }))
-
         const updateTask = updatedTasks.find(task => task.id == id);
-        if(updateTask)
+        if(updateTask){
             updateTask.finished = !updateTask.finished;
-        setTasks([...updatedTasks]);
+            try{
+                await api.put('/done', {
+                    id
+                })
+                setTasks([...updatedTasks]);
+            }catch(err){
+                console.log(err);
+            }     
+        }   
     }
-    function editTask(taskn: Task){
+    async function editTask(taskn: Task){
         const updatedTasks = tasks.map(task => ({...task}));
         const updateTask = updatedTasks.find(task => task.id == taskn.id);
         if(updateTask){
@@ -269,30 +305,72 @@ const Home = () => {
             updateTask.list_id = taskn.list_id;
             updateTask.date = taskn.date;
             updateTask.duration = taskn.duration;
+            try{
+                await api.put('/tasks', {
+                    id: taskn.id,
+                    title: taskn.title,
+                    date: taskn.date,
+                    duration: taskn.duration,
+                    list_id: taskn.list_id
+                })
+                setTasks([...updatedTasks]);
+            }catch(err){
+                console.log(err);
+            }
         }
-        setTasks([...updatedTasks]);
     }
-    function deleteTask(id: string){
-       setTasks(tasks.filter(item => item.id != id));
+    async function deleteTask(id: string){
+        try{
+            await api.delete(`/tasks/${id}`);
+            setTasks(tasks.filter(item => item.id != id));
+        }catch(err){
+            console.log(err)
+        }
     }
-    function editList(listn: List){
+    async function editList(listn: List){
         const updatedLists = lists.map(list => ({...list}));
         const updateList = updatedLists.find(list => list.id == listn.id);
         if(updateList){
             updateList.title = listn.title;
             updateList.color = listn.color;
+            try{
+                await api.put('/lists', {
+                    id: listn.id,
+                    title: listn.title,
+                    color: listn.color
+                })
+                setLists([...updatedLists]);
+            }catch(err){
+                console.log(err)
+            }
         }
-        setLists([...updatedLists]);
+        
     }
-    function deleteList(id: string){
-       setLists(lists.filter(item => item.id != id));
+    async function deleteList(id: string){
+        try{
+            const response = await api.delete(`/lists/${id}`);
+            console.log(response);
+            setLists(lists.filter(item => item.id != id));
+        }catch(err){
+            console.log(err);
+        } 
     }
+    async function loadData(){
+        const response = await api.get<InfoResponse>('/info');
+        const {lists, tasks} = response.data;
+        setTasks([...tasks]);
+        setLists([...lists]);
+        console.log(response.data);
+    }
+    useEffect(() => {
+        loadData();
+    },[])
     return(
         <Container isVisible={popUpTasksIsVisible} >
             <Header>
                 <UserLogo>
                     <Logo src={logoImg}/>
-                    <UserInfo>Hello, {user.firstName} {user.lastName}!</UserInfo>
+                    <UserInfo>Hello, {user.first_name} {user.last_name}!</UserInfo>
                     <Button  onClick={signOutHome}>
                         <Icon/>
                     </Button>
@@ -311,11 +389,11 @@ const Home = () => {
                     <ContentBody >
                         <ContentBodyAlign>
                             {searchBar === '' ?
-                                lists.filter(item => Number(item.id) > 0).map(item => 
+                                lists.filter(item => item.id != '0').map(item => 
                                     <Lists list={item} setDate={setDate}  setPopUpIsVisible={showPopUpInfoList} selectList={selectList} setIdOptionSelected={setIdOptionSelected}/>    
                                 )
                             :
-                            lists.filter(item => Number(item.id) > 0 && item.title.includes(searchBar)).map(item => 
+                            lists.filter(item => item.id != '0' && item.title.includes(searchBar)).map(item => 
                                 <Lists list={item} setDate={setDate} setPopUpIsVisible={showPopUpInfoList} selectList={selectList} setIdOptionSelected={setIdOptionSelected}/>    
                             )
                             }
@@ -347,25 +425,25 @@ const Home = () => {
                             searchBar === '' ?
                                 isFilter ?
                                     lists.map(list =>
-                                        <TaskGroup setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask} setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && task.finished  && filterByDate(task.date) && (Number(date.id) < 0 ? date.id.replace('-','') === task.list_id : true))}/>      
+                                        <TaskGroupComplete setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask} setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && task.finished  && filterByDate(task.date) && (date.id.charAt(0) === '-' ? date.id.replace('-','') === task.list_id : true))}/>      
                                     )
                                 :
                                     lists.map(list =>
-                                        <TaskGroup setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask}  setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && !task.finished  && filterByDate(task.date) && (Number(date.id) < 0 ? date.id.replace('-','') === task.list_id : true))}/>      
+                                        <TaskGroup setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask}  setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && !task.finished  && filterByDate(task.date) && (date.id.charAt(0) === '-' ? date.id.replace('-','') === task.list_id : true))}/>      
                                     )
                             :   isFilter ?
                                     lists.map(list =>
-                                        <TaskGroup  setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask}  setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && !task.finished && task.title.includes(searchBar)) }/>      
+                                        <TaskGroupComplete  setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask}  setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && task.finished && task.title.includes(searchBar)) }/>      
                                     )
                                 :
                                     lists.map(list =>
-                                        <TaskGroup setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask}  setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && task.finished && task.title.includes(searchBar))}/>      
+                                        <TaskGroup setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask}  setDone={doneTask} list={list} data={tasks.filter(task => task.list_id === list.id && transformDate(task.duration) > 15 && !task.finished && task.title.includes(searchBar))}/>      
                                     )
 
                             }
                             <AnimatePresence>{ popUpDateIsVisible && <PopUpSelectDate idOptionSelected={idOptionSelected} setIdOptionSelected={setIdOptionSelected} setDate={setDate} coords={codD}  lists={lists} setIsVisible={setPopUpDateIsVisible}/>} </AnimatePresence>
                             <AnimatePresence>{ popUpInfoIsVisible && <PopUpInfoTask deleteTask={deleteTask} lists={lists} setTask={editTask} coords={codI} task={taskSelected} setIsVisible={setPopUpInfoIsVisible}/>} </AnimatePresence>
-                            <AnimatePresence>{ popUpInfoListIsVisible && <PopUpInfoList deleteList={deleteList}  setList={editList} list={listSelected} setIsVisible={setPopUpInfoListIsVisible}/>} </AnimatePresence>
+                            <AnimatePresence>{ popUpInfoListIsVisible && <PopUpInfoList setPublished={handlePublish} deleteList={deleteList}  setList={editList} list={listSelected} setIsVisible={setPopUpInfoListIsVisible}/>} </AnimatePresence>
                         </TasksShowed>
                     </ContentBody>
                 </TasksContent>
@@ -377,7 +455,7 @@ const Home = () => {
                         <ContentBodyAlign>
                             {searchBar === '' ?
                                 tasks.map(task =>
-                                    transformDate(task.duration) <= 15  && filterByDate(task.date) && (Number(date.id) < 0 ? date.id.replace('-','') === task.list_id : true)? <Tasks setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask} setDone={doneTask} quick={true} color={getList(task.list_id)?.color} data={task} />
+                                    transformDate(task.duration) <= 15  && filterByDate(task.date) && (date.id.charAt(0) === '-' ? date.id.replace('-','') === task.list_id : true)? <Tasks setCoords={setCodI} setPopUpIsVisible={showPopUpInfo} selectTask={selectTask} setDone={doneTask} quick={true} color={getList(task.list_id)?.color} data={task} />
                                     : null
                                 )
                             :

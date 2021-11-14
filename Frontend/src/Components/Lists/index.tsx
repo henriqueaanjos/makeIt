@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getAllJSDocTags } from 'typescript';
+import { api } from '../../Services/api';
 
 import {
     Container,
@@ -6,7 +8,10 @@ import {
     Icon,
     Content,
     InfoButton,
-    InfoIcon
+    Icons,
+    InfoIcon,
+    PublishIcon,
+    ShareIcon
 } from './styles';
 
 interface DateProps{
@@ -17,7 +22,8 @@ interface DateProps{
 interface List{
     id: string,
     title: string,
-    color: string
+    color: string,
+    published: boolean
 }
 interface ListProps {
     list: List
@@ -28,6 +34,8 @@ interface ListProps {
 }
 
 const Lists = ({list, setDate, setIdOptionSelected, selectList, setPopUpIsVisible}: ListProps) => {
+    const [isPublished, setIsPublised] = useState(list.published);
+    const [isShared, setIsShared] = useState(false);
     function handleFilterByList(){
         setDate({
             id: '-'+list.id,
@@ -40,14 +48,30 @@ const Lists = ({list, setDate, setIdOptionSelected, selectList, setPopUpIsVisibl
         selectList(list);
         setPopUpIsVisible(true);
     }
+    async function getData(){
+        try{
+            const result = await api.get(`/users/${list.id}`);
+            result.data.length > 1 ? setIsShared(true) : setIsShared(false);
+        }catch(err){
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
     return(
         <Container >
             <Icon color={list.color} onClick={handleFilterByList}/>
             <Content>
                 <Title color={list.color} onClick={handleFilterByList} >{list.title}</Title>
-                <InfoButton onClick={handleHover} >
-                    <InfoIcon id={list.id}/>
-                </InfoButton>
+                <Icons>
+                    {isPublished && <PublishIcon />}
+                    {isShared && <ShareIcon />}
+                    <InfoButton onClick={handleHover} >
+                        <InfoIcon id={list.id}/>
+                    </InfoButton>
+                </Icons>
             </Content>
         </Container>
     );

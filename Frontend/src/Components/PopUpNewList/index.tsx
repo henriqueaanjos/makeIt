@@ -33,7 +33,8 @@ interface CoordsProps{
 interface List{
     id: string,
     title: string,
-    color: string
+    color: string,
+    published: boolean
 }
 
 interface PopUpProps {
@@ -69,7 +70,8 @@ const PopUpNewList = ({ setIsVisible, lists, addList, coords}: PopUpProps) => {
                 const list = {
                     id: String(lists.length),
                     title: title.toLowerCase(),
-                    color
+                    color,
+                    published: false
                 }
                 addList(list);
                 setTitle('');
@@ -78,13 +80,13 @@ const PopUpNewList = ({ setIsVisible, lists, addList, coords}: PopUpProps) => {
             }else{
                 setError({
                     id: 2,
-                    text: 'Escolha a color antes!'
+                    text: 'Choice a Color Before!'
                 });
             }
         }else{
             setError({
                 id: 1,
-                text: 'Preencha o Title antes!'
+                text: 'Digit a Title Before!'
             });
         }
     }

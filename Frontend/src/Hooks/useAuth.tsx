@@ -1,24 +1,26 @@
 import React, { useContext, createContext, ReactNode, useState, useEffect } from 'react';
+import { api } from '../Services/api';
 
 interface AuthContextProps{
     children: ReactNode
 }
 interface User{
     id: string,
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     email: string
 }
-interface Error{
-    id: number, 
-    title: string, 
-    description: string
+interface AuthResponse{
+    token:string,
+    user: User,
+    code: number
 }
+
 interface AuthDataProps{
     user: User,
-    signIn:(email: string, password: string) => number
+    signIn:(email: string, password: string) => Promise<number>
     signOut:()  => void
-    signUp:(firstName: string, lastName: string, email: string, password: string) => number
+    signUp:(firstName: string, lastName: string, email: string, password: string) => Promise<number>
     isLoading: boolean
 }
 
@@ -27,29 +29,27 @@ const AuthContext = createContext({} as AuthDataProps);
 export function AuthProvider({ children }: AuthContextProps){
     const [user, setUser] = useState<User>({} as User);
     const [isLoading, setIsLoading] = useState(true);
-    const userKey = '@makeIt:user';
+    const tokenKey = '@makeIt:token';
 
     function signOut(){
         setUser({} as User);
-         localStorage.removeItem(userKey);
+         localStorage.removeItem(tokenKey);
     }
-    function signIn(email: string, password: string){
-        if(email.toLowerCase() === 'henrique.aa01@gmail.com'){
-            if(password === '123456'){
-                const userLogged = {
-                    id: '1',
-                    firstName: 'Henrique',
-                    lastName: 'Anjos',
-                    email: email.toLowerCase()
-                };
-                setUser(userLogged);
-                console.log(user);
-                localStorage.setItem(userKey, JSON.stringify(userLogged));
-                return 42;
-            }else return 200;
-        }else return 100;
+    async function signIn(email: string, password: string){
+        const response = await api.post<AuthResponse>('authenticate',{
+            email, 
+            password
+        })
+        const {token, user} = response.data;
+        if(token){
+            localStorage.setItem(tokenKey, token);
+            api.defaults.headers.common.authorization = `Bearer ${token}`
+            setUser(user);
+            return 42;
+        }
+        return response.data.code;
     }
-    function signUp(firstName: string, lastName: string, email: string, password: string ){
+    async function signUp(firstName: string, lastName: string, email: string, password: string ){
         const regexE = /@[a-z|A-Z]+.[a-z|A-Z]+/;
         if(firstName != ''){
             if(lastName != ''){
@@ -58,14 +58,16 @@ export function AuthProvider({ children }: AuthContextProps){
                     const regexL = /[a-z|A-Z]/;
                     if(regex.test(password) && regexL.test(password)){
                         const userLogged = {
-                            id: '2',
-                            firstName: firstName,
-                            lastName: lastName,
+                            first_name: firstName,
+                            last_name: lastName,
                             email: email.toLowerCase(),
+                            password
                         };
-                        setUser(userLogged);
-                        console.log(user);
-                        localStorage.setItem(userKey, JSON.stringify(userLogged));
+                        const response = await api.post<AuthResponse>('signup', userLogged);
+                        const {token, user} = response.data;
+                        localStorage.setItem(tokenKey, token);
+                        api.defaults.headers.common.authorization = `Bearer ${token}`
+                        setUser(user);
                         return 42;
                     }else return 202;
                 }else return 101;
@@ -75,15 +77,17 @@ export function AuthProvider({ children }: AuthContextProps){
     }
     
     useEffect(() => {
-        async function loadStorageUserData(){
-            const userData = await localStorage.getItem(userKey);
-            if(userData){
-                const userLogged = JSON.parse(userData) as User;
-                setUser(userLogged);
+        async function loadToken(){
+            const token = await localStorage.getItem(tokenKey);
+            if(token){
+                api.defaults.headers.common.authorization = `Bearer ${token}`;
+                api.get<User>('/profile').then(response => {
+                    setUser(response.data)
+                })
             }
             setIsLoading(false);
         }
-        loadStorageUserData();
+        loadToken();
     }, []);
 
     return(

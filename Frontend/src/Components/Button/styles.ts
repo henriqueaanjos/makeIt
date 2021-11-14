@@ -2,12 +2,16 @@ import styled, { keyframes } from 'styled-components';
 
 interface ButtonProps{
     color: string,
-    width: string
+    width: string,
+    small?: boolean
+}
+interface TextProps{
+    small?: boolean
 }
 
 export const Container = styled.button<ButtonProps>`
     width: ${({width}) => width};
-    height: 50px;
+    height: ${({small}) => small ? 30: 50}px;
     background-color:  ${({ color }) => color };
     display: flex;
     align-items: center;
@@ -24,7 +28,7 @@ export const Container = styled.button<ButtonProps>`
     }
 `;
 
-export const Text = styled.h1`
+export const Text = styled.h1<TextProps>`
     color:  ${({ theme }) => theme.colors.text};
-    font-size: 30px;
+    font-size: ${({small}) => small ? 20: 30}px;
 `;

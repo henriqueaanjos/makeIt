@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FiMenu, FiInfo} from 'react-icons/fi';
+import { FiMenu, FiInfo, FiGlobe, FiShare2} from 'react-icons/fi';
 
 interface ListProps{
     color: string
@@ -40,6 +40,24 @@ export const InfoButton = styled.button`
     background-color: transparent;
     border: none;
     cursor: pointer;
+`;
+
+export const Icons = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+export const PublishIcon = styled(FiGlobe)`
+    margin-right: 10px;
+    font-size: 18px;
+    stroke-width: 3px;
+    color:  ${({ theme }) =>  theme.colors.text_disable};
+`;
+export const ShareIcon = styled(FiShare2)`
+    margin-right: 10px;
+    font-size: 18px;
+    stroke-width: 3px;
+    color:  ${({ theme }) =>  theme.colors.text_disable};
 `;
 
 

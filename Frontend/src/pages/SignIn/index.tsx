@@ -105,9 +105,9 @@ const SignIn = () => {
         }
     }
 
-    function handleSubmit(e: FormEvent){
+    async function handleSubmit(e: FormEvent){
         e.preventDefault();
-        const vai = signIn(email, password);;
+        const vai = await signIn(email, password);
         setStatus(vai);
         console.log(status);
         switch(vai){
@@ -115,10 +115,12 @@ const SignIn = () => {
                 history.push('/');
                 break; 
             case 100:
+                setEmail('');
                 controls_1.start("animationOne");
                 setTimeout(() => {controls_1.stop(); controls_1.set("reset")}, 200);
                 break;
             case 200:
+                setPassword('');
                 controls_2.start("animationOne");
                 setTimeout(() => {controls_2.stop(); controls_2.set("reset")}, 200);
                 break;

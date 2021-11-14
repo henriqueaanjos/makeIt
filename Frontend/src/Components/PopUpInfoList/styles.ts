@@ -103,6 +103,7 @@ export const FooterButton = styled(Button)`
 `;
 
 export const Shared = styled.input`
+    width:100%;
     font-size: 24px;
     border: none;
     border-bottom: 2px solid  ${({ theme }) => theme.colors.title};
@@ -110,4 +111,62 @@ export const Shared = styled.input`
     :focus{
         border-bottom: 2px solid  ${({ theme }) => theme.colors.primary};
     }
+`;
+export const Published = styled.div`
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid  ${({ theme }) => theme.colors.primary};
+    border-radius: 10px;
+    padding: 5px 7px;
+`;
+
+export const PublishedTitle = styled.h3`
+    color:  ${({ theme }) => theme.colors.secundary};
+`;
+
+export const PublicUrlField = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 20px 10px;
+    overflow-x: scroll;
+`;
+
+
+export const PublicUrl = styled.h3`
+    color:  ${({ theme }) => theme.colors.primary};
+    white-space: nowrap;
+`;
+
+export const SharedField = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+`;
+
+export const DropDown = styled.ul`
+    width:100%;
+    margin-top: -15px;
+    padding: 5px 5px;
+    margin-bottom: 30px;
+`;
+
+export const Item = styled.li`
+    list-style: none;
+    font-size: 20px;
+    border-bottom: 1px solid  ${({ theme }) => theme.colors.primary};
+    padding: 5px 10px;
+    :hover{
+        background-color:  ${({ theme }) => theme.colors.primary};
+        color:  ${({ theme }) => theme.colors.title};
+    }
+`;
+
+export const InfoList = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;

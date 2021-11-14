@@ -105,7 +105,7 @@ const SignUp = () => {
             return {} as Error;
         }
     }
-    function handleSubmit(e: FormEvent){
+    async function handleSubmit(e: FormEvent){
         e.preventDefault();
         console.log({
             fname,
@@ -113,7 +113,7 @@ const SignUp = () => {
             email,
             password
         })
-        const vai = signUp(fname, lname, email, password);
+        const vai = await signUp(fname, lname, email, password);
         setStatus(vai);
         console.log(status);
         switch(vai){
