@@ -1,59 +1,138 @@
 <h1 align="center">
-    <img alt="Makeit" src="https://github.com/henriqueaanjos/frontend/blob/master/src/Assets/logo.svg" align="center" justify="center"/>
+    <img alt="Make It" title="Make It" src="./Frontend/src/Assets/logo.svg" />
 </h1>
 
+<h6 align="center"> 
+  A new way to make any things you will have to do !
+</h6>
+<!-- <h5 align="center"> 
+ 🚧 Project in Development 🚧
+</h5> -->
+
 <p align="center">
-  <a href="#-tecnologias">Tecnologias</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-projeto">Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-layout">Layout</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-Execução">Execução</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#memo-licença">Licença</a>
+
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/henriqueaanjos/makeit?color=%2304D361">
+
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/henriqueaanjos/makeit">
+	
+  
+  <a href="https://github.com/henriqueaanjos/makeit/commits/master">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/henriqueaanjos/makeit">
+  </a>
+  
+
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
+   <a href="https://github.com/henriqueaanjos/bethehero/stargazers">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/henriqueaanjos/makeit?style=social">
+  </a>
 </p>
 
 <p align="center">
- <img src="https://img.shields.io/static/v1?label=PRs&message=welcome&color=15C3D6&labelColor=000000" alt="PRs welcome!" />
-
-  <img alt="License" src="https://img.shields.io/static/v1?label=license&message=MIT&color=15C3D6&labelColor=000000">
+  <a href="#-About-Project">About</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-Layout">Layout</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-Features">Features</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-Technologies">Technologies</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-Requirements">Requirements</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;  
+  <a href="#-Instructions">Instructions</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-License">License</a>
 </p>
-
-<br>
 
 <p align="center">
-  <img src="https://github.com/henriqueaanjos/makeIt/blob/85dad32197f2f9bba563ff0a83c8449fc869c092/Frontend/src/Assets/Group%209.png" alt="PRs welcome!" />
+    <img alt="Make It" title="Make It" src="./Frontend/src/Assets/mockup.png" />
 </p>
 
-## 🚀 Tecnologias
+## 💻 About Project
+  Have you ever forgotten an appointment or task that you were supposed to do? Make It was developed to help you with this. Make It is a Todo List that allows you to:
+  - Group tasks by lists,
+  - Set task duration time,
+  - Separate quick tasks (lasting max 15min) and larger projects.
+  - Set activities for today, tomorrow and next week.
+  - In addition to enabling search by name of tasks and lists.
+
+## 🎨 Layout
+  The complete Layout can be accessed on figma in this link:
+  <a href="https://www.figma.com/file/mbtwBPDiowUJaTlt3QzGVL/Makeit?node-id=0%3A1">
+    <img alt="GitHub last commit" src="https://img.shields.io/static/v1?label=Layout&message=Figma&color=orange">
+  </a>
+  
+## 🛠 Tecnologies
 
 This project was developer with belong tecnologies:
 
 - [Node.js](https://nodejs.org/en/)
+- [Prisma](https://knexjs.org)
+- [Express](https://expressjs.com)
+- [SqLite3](https://www.sqlite.org/index.html)
 - [React](https://reactjs.org)
-- [Prisma](https://prisma.io/)
-- [Styled-Components](https://styled-components.com)
-- [TypeScript](https://www.typescriptlang.org/)
+- [Styled-components](https://styled-components.com)
+- [Framer Motion](https://www.prisma.io)
+- [React Lottie](https://github.com/chenqingspring/react-lottie)
+- [Typescript](https://www.typescriptlang.org)
+- [React-Native](https://reactnative.dev)
+- [Expo](https://expo.dev)
 
-## 💻 Projeto
+## 🚨 Requirements
 
-Make It is a new form to remember all the thing you have do to.
+To run this project you will need to have the following tools installed on your machine:
+- [Node.js](https://nodejs.org/en/)
+- [Git](https://git-scm.com)
 
-## 🔖 Layout
+## 🧭 Instructions
+### 🎲 Backend
+```bash
+# Clone este repositório
+$ git clone https://github.com/henriqueaanjos/makeit.git
 
-No link abaixo você encontra o layout do projeto web . Lembrando que você precisa ter uma conta no [Figma](http://figma.com/) para acessá-lo.
+# Acesse a pasta do projeto no terminal/cmd
+$ cd makeit
 
-- [Layout Web](https://www.figma.com/file/mbtwBPDiowUJaTlt3QzGVL/Makeit)
+# Vá para a pasta server
+$ cd backend
 
-## 🚀 Execução 
+# Instale as dependências
+$ npm install
 
-Para executar, primeiro dentro de `/backend` crie um arquivo `.env` com as váriavéis `BASE_URL\n AUTH_SECRET \n JWT_SECRET`, após isso, ainda dentro de `/backend`
-execute `yarn` ou `npm install`, para instalar as dependências do projeto. Após isso, execute `yarn dev` para inciar o servidor.
+# Execute a aplicação em modo de desenvolvimento
+$ npm run dev
 
-Para o Frontend, primeiro dentro da pasta `/frontend` execute `yarn` ou `npm install` para instalar também as dependencias do projeto. Após isso execute `yarn start`
-para iniciar o Cliente
+# O servidor inciará na porta:4000 - acesse http://localhost:4000 
+```
 
-## :memo: Licença
+### 💻 Frontend
+```bash
+# Clone este repositório
+$ git clone https://github.com/henriqueaanjos/makeit.git
 
-Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
+# Acesse a pasta do projeto no seu terminal/cmd
+$ cd makeIt
+
+# Vá para a pasta da aplicação Front End
+$ cd frontend
+
+# Instale as dependências
+$ npm install
+
+# Execute a aplicação em modo de desenvolvimento
+$ npm run start
+
+# A aplicação será aberta na porta:3000 - acesse http://localhost:3000
+```
+### 📱Mobile
+
+ 🚧 Under development 🚧
+ 
+## 📖 License
+This project is under the MIT license. See the <a href="/license">LICENSE</a> file for more details.
 
 ---
-
-by Henrique Anjos :wave: 
+<p align="center">
+  by Henrique Anjos with ❤️
+</p>
+<p align="center">
+  <a href="https://www.linkedin.com/in/henrique-aanjos">
+    <img alt="Conecte-se comigo no LinkedIn" src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white">
+  </a>
+  <a href="https://www.instagram.com/henriqueaanjos/">
+    <img alt="Conecte-se comigo no Instagram" src="https://img.shields.io/badge/Instagram-E4405F?style=flat&logo=instagram&logoColor=white">
+  </a>
+</p
