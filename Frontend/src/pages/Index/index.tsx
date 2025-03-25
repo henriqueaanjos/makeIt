@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { useHistory } from 'react-router';
-
 import Circles from '../../Components/Circles';
 import Button from '../../Components/Button';
 import Stripes from '../../Components/Stripes';
@@ -18,6 +16,7 @@ import {
     StripesDown
 } from './styles';
 import theme from '../../Global/styles/theme';
+import { useNavigate } from 'react-router-dom';
 
 const transition = { duration: 3, ease: [0.43, 0.13, 0.23, 0.96] };
 const indexLeftVariants = {
@@ -47,9 +46,9 @@ const indexLogoVariants = {
 }
 
 const Index = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     function handleGoTo(path: string){
-        history.push(path);
+        navigate(path);
     }
     return(
         <Container>

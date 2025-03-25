@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../Hooks/useAuth';
 import { useAnimation, AnimatePresence } from 'framer-motion';
-import { useParams, useHistory } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { useTheme } from 'styled-components';
 
 import { 
@@ -97,7 +97,7 @@ const Home = () => {
     const { signOut, user } = useAuth();
     const controls = useAnimation();
     const { id } = useParams() as any;
-    const history = useHistory();
+    const navigate = useNavigate();
     const theme = useTheme();
 
     const [popUpTasksIsVisible, setPopUpTasksIsVisible] = useState(false);
@@ -291,7 +291,7 @@ const Home = () => {
             setTasks([...tasks]);
             setLists([list]);
         }catch(err){
-            history.push('/404');
+            navigate('/404');
         }
     }
     useEffect(() => {
@@ -303,8 +303,8 @@ const Home = () => {
                 <UserLogo>
                     <Logo src={logoImg}/>
                     <UserInfo>
-                        <ButtonSignUp text="SignUp" color={theme.colors.tercenary} width="48%" small onClick={() => history.push('/signup')}/>
-                        <ButtonSignIn text="SignIn" color={theme.colors.secundary} width="48%" small onClick={() => history.push('/signin')}/>
+                        <ButtonSignUp text="SignUp" color={theme.colors.tercenary} width="48%" small onClick={() => navigate('/signup')}/>
+                        <ButtonSignIn text="SignIn" color={theme.colors.secundary} width="48%" small onClick={() => navigate('/signin')}/>
                     </UserInfo>
                     <Button  >
                     </Button>

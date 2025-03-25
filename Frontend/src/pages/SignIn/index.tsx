@@ -1,5 +1,5 @@
 import React, {FormEvent, useState} from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAnimation, useCycle } from 'framer-motion';
 import { useAuth } from '../../Hooks/useAuth';
 import { useTheme } from 'styled-components';
@@ -69,7 +69,7 @@ const variantsInput = {
 } 
 
 const SignIn = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const controls_1 = useAnimation();
     const controls_2 = useAnimation();
@@ -94,7 +94,7 @@ const SignIn = () => {
         }else{
             signInLogoVariants = {}
         }
-        history.push(path);
+        navigate(path);
     }
     function getError(){
         const error = errors.find(item => item.id === status);
@@ -112,7 +112,7 @@ const SignIn = () => {
         console.log(status);
         switch(vai){
             case 42:
-                history.push('/');
+                navigate('/');
                 break; 
             case 100:
                 setEmail('');

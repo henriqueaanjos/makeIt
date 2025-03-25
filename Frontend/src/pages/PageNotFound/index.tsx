@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
-import { useHistory } from 'react-router';
 
 import {
     Container,
@@ -14,12 +13,13 @@ import {
 } from './styles';
 
 import Button from '../../Components/Button';
+import { useNavigate } from 'react-router-dom';
 
 const PageNotFound = () => {
     const theme = useTheme();
-    const history = useHistory();
+    const navigate = useNavigate();
     function handleGoBack(){
-        history.push('/');
+        navigate('/');
     }
 
     return(

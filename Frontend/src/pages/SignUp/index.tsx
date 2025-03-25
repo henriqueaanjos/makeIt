@@ -1,5 +1,4 @@
 import React, { useState, FormEvent } from 'react';
-import { useHistory } from 'react-router';
 import { useAuth } from '../../Hooks/useAuth';
 import { useAnimation } from 'framer-motion';
 import { useTheme } from 'styled-components';
@@ -28,6 +27,7 @@ import Stripes from '../../Components/Stripes';
 import Button from '../../Components/Button';
 import logoImg  from '../../Assets/logo.svg';
 import { errors }  from '../../Utils/errors';
+import { useNavigate } from 'react-router-dom';
 
 interface Error{
     id: number, 
@@ -70,7 +70,7 @@ const variantsInput = {
 } 
 
 const SignUp = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { signUp } = useAuth();
     const controls_1 = useAnimation();
     const controls_2 = useAnimation();
@@ -95,7 +95,7 @@ const SignUp = () => {
         }else{
             signUpLogoVariants = {}
         }
-        history.push(path);
+        navigate(path);
     }
     function getError(){
         const error = errors.find(item => item.id === status);
@@ -118,7 +118,7 @@ const SignUp = () => {
         console.log(status);
         switch(vai){
             case 42:
-                history.push('/');
+                navigate('/');
                 break; 
             case 11:
                 console.log('Aqui entrou!');
@@ -130,7 +130,7 @@ const SignUp = () => {
                 setTimeout(() => {controls_2.stop(); controls_2.set("reset")}, 200);
                 break;
             case 42:
-                history.push('/');
+                navigate('/');
                 break;
             case 101:
                 controls_3.start("animationOne");

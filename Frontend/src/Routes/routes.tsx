@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../Hooks/useAuth';
-import { Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 import Index from '../pages/Index';
@@ -12,24 +12,28 @@ import PageNotFound from '../pages/PageNotFound';
 
 const AuthRoutes = () => {
   const { user } = useAuth();
+  
   return (
     <BrowserRouter>
-      <Route  
-        render={({ location }) => (
-          <AnimatePresence exitBeforeEnter initial={false}>
-            <Switch location={location} key={location.pathname}>
-              { user.id  && <Route exact path="/" component={Home} /> }
-              { user.id  && <Redirect from='/signIn' to='/' /> }
-              { user.id  && <Redirect from='/signUp' to='/' /> }
-              { !user.id && <Route exact path="/" component={Index} />}
-              { !user.id && <Route exact path="/signIn" component={SignIn} />}
-              { !user.id && <Route exact path="/signUp" component={SignUp} />}
-              <Route path='/publish/:id' component={HomePublic}/>
-              <Route path='*' exact={true} component={PageNotFound} />
-            </Switch>
-          </AnimatePresence>
-        )}
-      />
+      <AnimatePresence  initial={false}>
+        <Routes>
+          {user.id ? (
+            <>
+              <Route path="/" element={<Home />} />
+              <Route path="/signIn" element={<Navigate to="/" />} />
+              <Route path="/signUp" element={<Navigate to="/" />} />
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<Index />} />
+              <Route path="/signIn" element={<SignIn />} />
+              <Route path="/signUp" element={<SignUp />} />
+            </>
+          )}
+          <Route path="/publish/:id" element={<HomePublic />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </AnimatePresence>
     </BrowserRouter>
   );
 }
