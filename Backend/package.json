@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --exit-child src/app.ts",
     "build": "tsc",
+    "start": "node dist/app.js",
     "vercel-build": "echo hello world"
   },
   "dependencies": {
